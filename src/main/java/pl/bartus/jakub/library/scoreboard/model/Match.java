@@ -11,6 +11,7 @@ public class Match {
     private Team awayTeam;
     @Builder.Default
     private Score score = new Score(0,0);
-    private int totalScore;
+    @Builder.Default
+    private int totalScore = 0;
     private final LocalDateTime startedAt = LocalDateTime.now();
 }
