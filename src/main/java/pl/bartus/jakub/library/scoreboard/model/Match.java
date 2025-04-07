@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 public class Match {
     private Team homeTeam;
     private Team awayTeam;
-    private Score score;
+    @Builder.Default
+    private Score score = new Score(0,0);
     private int totalScore;
     private final LocalDateTime startedAt = LocalDateTime.now();
 }
