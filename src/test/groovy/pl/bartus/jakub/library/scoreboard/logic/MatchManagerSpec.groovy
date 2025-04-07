@@ -90,7 +90,7 @@ class MatchManagerSpec extends Specification {
         then:
         match.score.homePoints == homePoints
         match.score.awayPoints == awayPoints
-        match.score.totalScore = totalScore
+        match.score.totalScore == totalScore
 
         where:
         updateTeam | homePoints | awayPoints | totalScore
