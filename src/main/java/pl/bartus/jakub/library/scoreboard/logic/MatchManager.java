@@ -1,7 +1,9 @@
 package pl.bartus.jakub.library.scoreboard.logic;
 
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException;
+import pl.bartus.jakub.library.scoreboard.exception.TeamHasActiveMatchException;
 import pl.bartus.jakub.library.scoreboard.model.Match;
 import pl.bartus.jakub.library.scoreboard.model.Team;
 
@@ -10,27 +12,37 @@ import java.util.Set;
 
 @NoArgsConstructor
 public class MatchManager {
-    public final Set<Match> matches = new HashSet<>();
+    private final Set<Match> matches = new HashSet<>();
 
     public Set<Match> findAllOngoingMatches() {
         return matches;
     }
 
-    public void addNewMatch(String homeTeamName, String awayTeamName) {
-        Match match = initializeMatch(homeTeamName, awayTeamName);
+    public void addNewMatch(Team homeTeam, Team awayTeam) {
+        if (isTeamInOngoingMatch(homeTeam) || isTeamInOngoingMatch(awayTeam)) {
+            throw new TeamHasActiveMatchException("One of the teams is already in a match");
+        }
+
+        Match match = initializeMatch(homeTeam, awayTeam);
+
         matches.add(match);
     }
 
-    private Match initializeMatch(String homeTeamName, String awayTeamName) {
-        validateTeams(homeTeamName, awayTeamName);
+    private boolean isTeamInOngoingMatch(@NonNull Team team) {
+        return matches.stream()
+                .anyMatch(match -> match.getHomeTeam().equals(team) || match.getAwayTeam().equals(team));
+    }
+
+    private Match initializeMatch(Team homeTeam, Team awayTeam) {
+        validateTeams(homeTeam, awayTeam);
 
         return Match.builder()
-                .homeTeam(new Team(homeTeamName))
-                .awayTeam(new Team(awayTeamName))
+                .homeTeam(homeTeam)
+                .awayTeam(awayTeam)
                 .build();
     }
 
-    private void validateTeams(String homeTeam, String awayTeam) {
+    private void validateTeams(Team homeTeam, Team awayTeam) {
         if (homeTeam == null || awayTeam == null) {
             throw new InvalidTeamException("Team names cannot be null");
         }
