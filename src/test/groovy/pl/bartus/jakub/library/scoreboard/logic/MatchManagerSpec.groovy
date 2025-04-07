@@ -1,6 +1,7 @@
 package pl.bartus.jakub.library.scoreboard.logic
 
 import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException
+import pl.bartus.jakub.library.scoreboard.exception.TeamHasActiveMatchException
 import spock.lang.Specification
 
 class MatchManagerSpec extends Specification {
@@ -43,4 +44,17 @@ class MatchManagerSpec extends Specification {
         then:
         thrown(InvalidTeamException)
     }
+
+    def "Should throw a TeamHasActiveMatchException because the team already exists in the collection"() {
+        given:
+        def matchManager = new MatchManager()
+
+        when:
+        matchManager.addNewMatch("Francja","Polska")
+        matchManager.addNewMatch("Polska","Francja")
+
+        then:
+        thrown(TeamHasActiveMatchException)
+    }
+
 }
