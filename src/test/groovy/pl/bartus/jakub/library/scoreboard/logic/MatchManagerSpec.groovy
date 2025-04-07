@@ -14,4 +14,21 @@ class MatchManagerSpec extends Specification {
         then:
         matches.isEmpty()
     }
+
+    def "Should add a new match to collection with ongoing matches"() {
+        given:
+        def matchManager = new MatchManager()
+
+        when:
+        matchManager.addNewMatch("Polska","Francja")
+        def matches = matchManager.findAllOngoingMatches()
+
+        then:
+        matches.size() == 1
+        matches.first().homeTeam.name() == "Polska"
+        matches.first().awayTeam.name() == "Francja"
+        matches.first().getScore().awayPoints() == 0
+        matches.first().getScore().homePoints() == 0
+        matches.first().totalScore == 0
+    }
 }
