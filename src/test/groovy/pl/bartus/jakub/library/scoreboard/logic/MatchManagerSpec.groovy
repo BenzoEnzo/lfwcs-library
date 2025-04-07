@@ -2,14 +2,22 @@ package pl.bartus.jakub.library.scoreboard.logic
 
 import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException
 import pl.bartus.jakub.library.scoreboard.exception.TeamHasActiveMatchException
+import pl.bartus.jakub.library.scoreboard.model.Team
 import spock.lang.Specification
 
 class MatchManagerSpec extends Specification {
 
-    def "Should return an empty set of ongoing matches"() {
-        given:
-        def matchManager = new MatchManager()
+    def matchManager
+    def teamA, teamB, teamC
 
+    def setup(){
+        matchManager = new MatchManager()
+        teamA = new Team("Polska")
+        teamB = new Team("Francja")
+        teamC = new Team("Niemcy")
+    }
+
+    def "Should return an empty set of ongoing matches"() {
         when:
         def matches = matchManager.findAllOngoingMatches()
 
@@ -18,11 +26,9 @@ class MatchManagerSpec extends Specification {
     }
 
     def "Should add a new match to collection with ongoing matches"() {
-        given:
-        def matchManager = new MatchManager()
 
         when:
-        matchManager.addNewMatch("Polska","Francja")
+        matchManager.addNewMatch(teamA,teamB)
         def matches = matchManager.findAllOngoingMatches()
 
         then:
@@ -35,23 +41,19 @@ class MatchManagerSpec extends Specification {
     }
 
     def "Should throw an InvalidTeamException because team names are equal"() {
-        given:
-        def matchManager = new MatchManager()
 
         when:
-        matchManager.addNewMatch("Polska","Polska")
+        matchManager.addNewMatch(teamA,teamA)
 
         then:
         thrown(InvalidTeamException)
     }
 
     def "Should throw a TeamHasActiveMatchException because the team already exists in the collection"() {
-        given:
-        def matchManager = new MatchManager()
 
         when:
-        matchManager.addNewMatch("Francja","Polska")
-        matchManager.addNewMatch("Polska","Francja")
+        matchManager.addNewMatch(teamA,teamB)
+        matchManager.addNewMatch(teamA,teamC)
 
         then:
         thrown(TeamHasActiveMatchException)
