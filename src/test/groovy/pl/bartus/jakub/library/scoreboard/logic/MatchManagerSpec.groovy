@@ -1,5 +1,6 @@
 package pl.bartus.jakub.library.scoreboard.logic
 
+import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException
 import spock.lang.Specification
 
 class MatchManagerSpec extends Specification {
@@ -30,5 +31,16 @@ class MatchManagerSpec extends Specification {
         matches.first().getScore().awayPoints() == 0
         matches.first().getScore().homePoints() == 0
         matches.first().totalScore == 0
+    }
+
+    def "Should throw an InvalidTeamException because team names are equal"() {
+        given:
+        def matchManager = new MatchManager()
+
+        when:
+        matchManager.addNewMatch("Polska","Polska")
+
+        then:
+        thrown(InvalidTeamException)
     }
 }
