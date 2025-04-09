@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class Match {
-    private Team homeTeam;
-    private Team awayTeam;
+    private final Team homeTeam;
+    private final Team awayTeam;
     @Builder.Default
     private Score score = new Score(0, 0);
     @Builder.Default

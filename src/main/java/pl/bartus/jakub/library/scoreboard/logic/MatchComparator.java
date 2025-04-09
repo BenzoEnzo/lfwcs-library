@@ -10,7 +10,7 @@ public class MatchComparator implements Comparator<Match> {
         int scoreComparison = Integer.compare(o2.getTotalScore(), o1.getTotalScore());
 
         if (scoreComparison == 0) {
-            return o1.getStartedAt().compareTo(o2.getStartedAt());
+            return o2.getStartedAt().compareTo(o1.getStartedAt());
         }
 
         return scoreComparison;

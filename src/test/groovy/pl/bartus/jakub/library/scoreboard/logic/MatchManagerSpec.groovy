@@ -106,6 +106,7 @@ class MatchManagerSpec extends Specification {
         when:
         matchManager.addNewMatch(teamA, teamB)
         matchManager.addNewMatch(teamC, teamD)
+        Thread.sleep(100)
         matchManager.addNewMatch(teamE, teamF)
         matchManager.updateMatchScore(teamC, 90, 5)
         matchManager.updateMatchScore(teamE, 5, 90)
@@ -115,8 +116,8 @@ class MatchManagerSpec extends Specification {
 
         then:
         matches.size() == 3
-        matches.first().homeTeam.name == "Niemcy"
-        matches.first().awayTeam.name == "Islandia"
+        matches.first().homeTeam.name == "Szkocja"
+        matches.first().awayTeam.name == "Czechy"
         matches.last().homeTeam.name == "Polska"
         matches.last().awayTeam.name == "Francja"
     }
