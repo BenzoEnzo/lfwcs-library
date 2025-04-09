@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class MatchManager {
     private final Set<Match> matches = new HashSet<>();
 
-    public void finishMatch(@NonNull Team team){
+    public void finishMatch(@NonNull Team team) {
         Match match = findMatchByTeam(team);
         matches.remove(match);
     }

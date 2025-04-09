@@ -10,12 +10,12 @@ public class Match {
     private Team homeTeam;
     private Team awayTeam;
     @Builder.Default
-    private Score score = new Score(0,0);
+    private Score score = new Score(0, 0);
     @Builder.Default
     private int totalScore = 0;
     private final LocalDateTime startedAt = LocalDateTime.now();
 
-    public void calculateTotalScore(){
+    public void calculateTotalScore() {
         this.totalScore = score.homePoints() + score.awayPoints();
     }
 }

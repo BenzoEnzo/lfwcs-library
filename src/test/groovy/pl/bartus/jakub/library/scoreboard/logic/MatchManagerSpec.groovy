@@ -8,7 +8,8 @@ import spock.lang.Specification
 class MatchManagerSpec extends Specification {
 
     def matchManager
-    @Shared def teamA, teamB, teamC
+    @Shared
+    def teamA, teamB, teamC
 
     def setup() {
         matchManager = new MatchManager()
@@ -81,7 +82,7 @@ class MatchManagerSpec extends Specification {
 
         when:
         matchManager.addNewMatch(teamA, teamB)
-        matchManager.updateMatchScore(updateTeam,homePoints,awayPoints)
+        matchManager.updateMatchScore(updateTeam, homePoints, awayPoints)
         def match = matchManager.findAllOngoingMatches().find {
             it.homeTeam == updateTeam || it.awayTeam == updateTeam
         }
@@ -93,8 +94,8 @@ class MatchManagerSpec extends Specification {
 
         where:
         updateTeam | homePoints | awayPoints | totalScore
-        teamA      | 20         | 10         |  30
-        teamB      | 40         | 5          |  45
+        teamA      | 20         | 10         | 30
+        teamB      | 40         | 5          | 45
     }
 
     def "Should return ongoing matches in correct order by totalScore and by date"() {
