@@ -18,7 +18,7 @@ class MatchManagerSpec extends Specification {
         teamC = new Team("Niemcy")
     }
 
-    def "Should return an empty set of ongoing matches"() {
+    def "Should return an empty collection of ongoing matches"() {
         when:
         def matches = matchManager.findAllOngoingMatches()
 
@@ -97,7 +97,7 @@ class MatchManagerSpec extends Specification {
         teamA      | 20         | 10         | 30
     }
 
-    def "Should return ongoing matches in correct order by totalScore and by date"() {
+    def "Should return ongoing matches in correct order by totalScore then by date"() {
         given:
         def teamD = new Team("Islandia")
         def teamE = new Team("Szkocja")
