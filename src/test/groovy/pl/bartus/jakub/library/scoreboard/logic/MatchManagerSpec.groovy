@@ -1,7 +1,6 @@
 package pl.bartus.jakub.library.scoreboard.logic
 
-import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException
-import pl.bartus.jakub.library.scoreboard.exception.TeamHasActiveMatchException
+import pl.bartus.jakub.library.scoreboard.exception.ScoreBoardException
 import pl.bartus.jakub.library.scoreboard.model.Team
 import spock.lang.Shared
 import spock.lang.Specification
@@ -47,7 +46,7 @@ class MatchManagerSpec extends Specification {
         matchManager.addNewMatch(teamA, teamA)
 
         then:
-        thrown(InvalidTeamException)
+        thrown(ScoreBoardException)
     }
 
     def "Should throw a TeamHasActiveMatchException because the team already exists in the collection"() {
@@ -66,7 +65,7 @@ class MatchManagerSpec extends Specification {
         matchManager.updateMatchScore(teamA, -5, 4)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(ScoreBoardException)
     }
 
     def "Should throw an InvalidTeamException when updating the score of a non existent match"() {
@@ -75,7 +74,7 @@ class MatchManagerSpec extends Specification {
         matchManager.updateMatchScore(teamC, 4, 5)
 
         then:
-        thrown(InvalidTeamException)
+        thrown(ScoreBoardException)
     }
 
     def "Should correctly update the score of an existing match"() {
@@ -120,5 +119,9 @@ class MatchManagerSpec extends Specification {
         matches.first().awayTeam.name == "Islandia"
         matches.last().homeTeam.name == "Polska"
         matches.last().awayTeam.name == "Francja"
+    }
+
+    def ""() {
+
     }
 }
