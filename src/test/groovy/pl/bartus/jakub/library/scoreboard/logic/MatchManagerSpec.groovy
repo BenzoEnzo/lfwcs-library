@@ -56,7 +56,7 @@ class MatchManagerSpec extends Specification {
         matchManager.addNewMatch(teamA, teamC)
 
         then:
-        thrown(TeamHasActiveMatchException)
+        thrown(ScoreBoardException)
     }
 
     def "Should throw an IllegalArgumentException during update a score because one of the inputs has negative value"() {
@@ -111,7 +111,7 @@ class MatchManagerSpec extends Specification {
         matchManager.updateMatchScore(teamE, 5, 90)
         matchManager.updateMatchScore(teamA, 20, 10)
 
-        def matches = matchManager.findAllOngoingMatches().toList()
+        def matches = matchManager.findAllOngoingMatches()
 
         then:
         matches.size() == 3
@@ -121,7 +121,13 @@ class MatchManagerSpec extends Specification {
         matches.last().awayTeam.name == "Francja"
     }
 
-    def ""() {
+    def "Should correctly delete a match from the scoreboard"() {
+        when:
+        matchManager.addNewMatch(teamA, teamB)
+        matchManager.finishMatch(teamA)
+        def matches = matchManager.findAllOngoingMatches()
 
+        then:
+        matches.size() == 0
     }
 }
