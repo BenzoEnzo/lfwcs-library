@@ -19,15 +19,15 @@ public class Match {
         this.totalScore = score.homePoints() + score.awayPoints();
     }
 
-    public boolean isIncludeTeam(Team team){
+    public boolean isIncludeTeam(Team team) {
         return homeTeam.equals(team) || awayTeam.equals(team);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return homeTeam.name() + " " +
-               score.homePoints() + " - " +
-               awayTeam.name() + " " +
-               score.awayPoints();
+                score.homePoints() + " - " +
+                awayTeam.name() + " " +
+                score.awayPoints();
     }
 }
