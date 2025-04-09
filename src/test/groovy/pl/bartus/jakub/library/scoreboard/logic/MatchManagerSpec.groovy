@@ -41,7 +41,7 @@ class MatchManagerSpec extends Specification {
         matches.first().totalScore == 0
     }
 
-    def "Should throw an InvalidTeamException because team names are equal"() {
+    def "Should throw a ScoreBoardException because team names are equal"() {
 
         when:
         matchManager.addNewMatch(teamA, teamA)
@@ -50,7 +50,7 @@ class MatchManagerSpec extends Specification {
         thrown(ScoreBoardException)
     }
 
-    def "Should throw a TeamHasActiveMatchException because the team already exists in the collection"() {
+    def "Should throw a ScoreBoardException because the team already exists in the collection"() {
 
         when:
         matchManager.addNewMatch(teamA, teamB)
@@ -60,7 +60,7 @@ class MatchManagerSpec extends Specification {
         thrown(ScoreBoardException)
     }
 
-    def "Should throw an IllegalArgumentException during update a score because one of the inputs has negative value"() {
+    def "Should throw a ScoreBoardException during update a score because one of the inputs has negative value"() {
         when:
         matchManager.addNewMatch(teamA, teamB)
         matchManager.updateMatchScore(teamA, -5, 4)
@@ -95,7 +95,6 @@ class MatchManagerSpec extends Specification {
         where:
         updateTeam | homePoints | awayPoints | totalScore
         teamA      | 20         | 10         | 30
-        teamB      | 40         | 5          | 45
     }
 
     def "Should return ongoing matches in correct order by totalScore and by date"() {

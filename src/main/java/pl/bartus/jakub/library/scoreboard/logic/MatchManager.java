@@ -7,32 +7,33 @@ import pl.bartus.jakub.library.scoreboard.model.Match;
 import pl.bartus.jakub.library.scoreboard.model.Score;
 import pl.bartus.jakub.library.scoreboard.model.Team;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @NoArgsConstructor
 public class MatchManager {
-    private final Set<Match> matches = new HashSet<>();
+    private final Map<Team, Match> matches = new HashMap<>();
 
     public void finishMatch(@NonNull Team team) {
-        Match match = findMatchByTeam(team);
-        matches.remove(match);
+        matches.remove(team);
     }
 
-    public Set<Match> findAllOngoingMatches() {
-        return matches.stream()
+    public List<Match> findAllOngoingMatches() {
+        return matches.values()
+                .stream()
                 .sorted(new MatchComparator())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .toList();
     }
 
-    public void updateMatchScore(Team team, int homePoints, int awayPoints) {
+    public void updateMatchScore(@NonNull Team team, int homePoints, int awayPoints) {
         if (homePoints < 0 || awayPoints < 0) {
             throw new ScoreBoardException("Score values must be non-negative");
         }
 
-        Match match = findMatchByTeam(team);
+        Match match = matches.get(team);
+
+        if (match == null) {
+            throw new ScoreBoardException("Team not found in Score Board");
+        }
 
         match.setScore(new Score(homePoints, awayPoints));
         match.calculateTotalScore();
@@ -46,19 +47,11 @@ public class MatchManager {
                 .awayTeam(awayTeam)
                 .build();
 
-        matches.add(match);
+        matches.put(homeTeam, match);
     }
 
-    private Match findMatchByTeam(Team team) {
-        return matches.stream()
-                .filter(match -> match.getHomeTeam().equals(team) || match.getAwayTeam().equals(team))
-                .findFirst()
-                .orElseThrow(() -> new ScoreBoardException("No match found with the given team"));
-    }
-
-    private boolean isTeamInOngoingMatch(@NonNull Team team) {
-        return matches.stream()
-                .anyMatch(match -> match.getHomeTeam().equals(team) || match.getAwayTeam().equals(team));
+    private boolean isInOngoingMatch(Team team) {
+        return matches.values().stream().anyMatch(t -> t.isIncludeTeam(team));
     }
 
     private void validateTeams(Team homeTeam, Team awayTeam) {
@@ -70,8 +63,8 @@ public class MatchManager {
             throw new ScoreBoardException("Team must be different");
         }
 
-        if (isTeamInOngoingMatch(homeTeam) || isTeamInOngoingMatch(awayTeam)) {
-            throw new ScoreBoardException("One of the teams is already in a match");
+        if (isInOngoingMatch(homeTeam) || isInOngoingMatch(awayTeam)) {
+            throw new ScoreBoardException("Team is in an ongoing match");
         }
     }
 }
