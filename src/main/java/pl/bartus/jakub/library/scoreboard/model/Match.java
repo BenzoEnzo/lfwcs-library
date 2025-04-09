@@ -22,4 +22,12 @@ public class Match {
     public boolean isIncludeTeam(Team team){
         return homeTeam.equals(team) || awayTeam.equals(team);
     }
+
+    @Override
+    public String toString(){
+        return homeTeam.name() + " " +
+               score.homePoints() + " - " +
+               awayTeam.name() + " " +
+               score.awayPoints();
+    }
 }
