@@ -8,28 +8,32 @@ import pl.bartus.jakub.library.scoreboard.model.Score;
 import pl.bartus.jakub.library.scoreboard.model.Team;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class MatchManager {
-    private final Map<Team,Match> matches = new HashMap<>();
+    private final Map<Team, Match> matches = new HashMap<>();
 
     public void finishMatch(@NonNull Team team) {
         matches.remove(team);
     }
 
-    public Set<Match> findAllOngoingMatches() {
-        return matches.values().stream()
+    public List<Match> findAllOngoingMatches() {
+        return matches.values()
+                .stream()
                 .sorted(new MatchComparator())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .toList();
     }
 
-    public void updateMatchScore(Team team, int homePoints, int awayPoints) {
+    public void updateMatchScore(@NonNull Team team, int homePoints, int awayPoints) {
         if (homePoints < 0 || awayPoints < 0) {
             throw new ScoreBoardException("Score values must be non-negative");
         }
 
         Match match = matches.get(team);
+
+        if (match == null) {
+            throw new ScoreBoardException("Team not found in Score Board");
+        }
 
         match.setScore(new Score(homePoints, awayPoints));
         match.calculateTotalScore();
@@ -43,7 +47,11 @@ public class MatchManager {
                 .awayTeam(awayTeam)
                 .build();
 
-        matches.put(homeTeam,match);
+        matches.put(homeTeam, match);
+    }
+
+    private boolean isInOngoingMatch(Team team) {
+        return matches.values().stream().anyMatch(t -> t.isIncludeTeam(team));
     }
 
     private void validateTeams(Team homeTeam, Team awayTeam) {
@@ -53,6 +61,10 @@ public class MatchManager {
 
         if (homeTeam.equals(awayTeam)) {
             throw new ScoreBoardException("Team must be different");
+        }
+
+        if (isInOngoingMatch(homeTeam) || isInOngoingMatch(awayTeam)) {
+            throw new ScoreBoardException("Team is in an ongoing match");
         }
     }
 }

@@ -18,4 +18,8 @@ public class Match {
     public void calculateTotalScore() {
         this.totalScore = score.homePoints() + score.awayPoints();
     }
+
+    public boolean isIncludeTeam(Team team){
+        return homeTeam.equals(team) || awayTeam.equals(team);
+    }
 }
