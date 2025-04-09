@@ -69,7 +69,7 @@ class MatchManagerSpec extends Specification {
         thrown(ScoreBoardException)
     }
 
-    def "Should throw an InvalidTeamException when updating the score of a non existent match"() {
+    def "Should throw a ScoreBoardException  when updating the score of a non existent match"() {
         when:
         matchManager.addNewMatch(teamA, teamB)
         matchManager.updateMatchScore(teamC, 4, 5)
