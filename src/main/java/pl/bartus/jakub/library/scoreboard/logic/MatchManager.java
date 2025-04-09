@@ -2,8 +2,7 @@ package pl.bartus.jakub.library.scoreboard.logic;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import pl.bartus.jakub.library.scoreboard.exception.InvalidTeamException;
-import pl.bartus.jakub.library.scoreboard.exception.TeamHasActiveMatchException;
+import pl.bartus.jakub.library.scoreboard.exception.ScoreBoardException;
 import pl.bartus.jakub.library.scoreboard.model.Match;
 import pl.bartus.jakub.library.scoreboard.model.Score;
 import pl.bartus.jakub.library.scoreboard.model.Team;
@@ -17,6 +16,11 @@ import java.util.stream.Collectors;
 public class MatchManager {
     private final Set<Match> matches = new HashSet<>();
 
+    public void finishMatch(@NonNull Team team){
+        Match match = findMatchByTeam(team);
+        matches.remove(match);
+    }
+
     public Set<Match> findAllOngoingMatches() {
         return matches.stream()
                 .sorted(new MatchComparator())
@@ -25,7 +29,7 @@ public class MatchManager {
 
     public void updateMatchScore(Team team, int homePoints, int awayPoints) {
         if (homePoints < 0 || awayPoints < 0) {
-            throw new IllegalArgumentException("Score values must be non-negative");
+            throw new ScoreBoardException("Score values must be non-negative");
         }
 
         Match match = findMatchByTeam(team);
@@ -49,7 +53,7 @@ public class MatchManager {
         return matches.stream()
                 .filter(match -> match.getHomeTeam().equals(team) || match.getAwayTeam().equals(team))
                 .findFirst()
-                .orElseThrow(() -> new InvalidTeamException("No match found with the given team"));
+                .orElseThrow(() -> new ScoreBoardException("No match found with the given team"));
     }
 
     private boolean isTeamInOngoingMatch(@NonNull Team team) {
@@ -59,15 +63,15 @@ public class MatchManager {
 
     private void validateTeams(Team homeTeam, Team awayTeam) {
         if (homeTeam == null || awayTeam == null) {
-            throw new InvalidTeamException("Team cannot be null");
+            throw new ScoreBoardException("Team cannot be null");
         }
 
         if (homeTeam.equals(awayTeam)) {
-            throw new InvalidTeamException("Team must be different");
+            throw new ScoreBoardException("Team must be different");
         }
 
         if (isTeamInOngoingMatch(homeTeam) || isTeamInOngoingMatch(awayTeam)) {
-            throw new TeamHasActiveMatchException("One of the teams is already in a match");
+            throw new ScoreBoardException("One of the teams is already in a match");
         }
     }
 }
