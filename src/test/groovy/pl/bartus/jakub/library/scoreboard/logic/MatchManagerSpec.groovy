@@ -97,4 +97,31 @@ class MatchManagerSpec extends Specification {
         teamA      | 20         | 10         |  30
         teamB      | 40         | 5          |  45
     }
+
+    def "Should return ongoing matches in correct order by totalScore and by date"() {
+        given:
+        def teamD = new Team("Islandia")
+        def teamE = new Team("Szkocja")
+        def teamF = new Team("Czechy")
+
+        when:
+        matchManager.addNewMatch(teamA, teamB)
+        matchManager.addNewMatch(teamC, teamD)
+        matchManager.addNewMatch(teamE, teamF)
+        matchManager.updateMatchScore(updateTeam,homePoints,awayPoints)
+        def matches = matchManager.findAllOngoingMatches()
+
+        then:
+        matches.size() == 3
+        matches.first().homeTeam.name() == "Niemcy"
+        matches.first().awayTeam.name() == "Islandia"
+        matches.second().homeTeam.name() == "Czechy"
+        matches.second().awayTeam.name() == "Szkocja"
+
+        where:
+        updateTeam | homePoints | awayPoints | totalScore
+        teamA      | 20         | 10         |  30
+        teamC      | 90         | 5          |  95
+        teamE      | 5          | 90         |  95
+    }
 }
