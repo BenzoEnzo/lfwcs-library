@@ -9,14 +9,18 @@ import pl.bartus.jakub.library.scoreboard.model.Score;
 import pl.bartus.jakub.library.scoreboard.model.Team;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class MatchManager {
     private final Set<Match> matches = new HashSet<>();
 
     public Set<Match> findAllOngoingMatches() {
-        return matches;
+        return matches.stream()
+                .sorted(new MatchComparator())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public void updateMatchScore(Team team, int homePoints, int awayPoints) {

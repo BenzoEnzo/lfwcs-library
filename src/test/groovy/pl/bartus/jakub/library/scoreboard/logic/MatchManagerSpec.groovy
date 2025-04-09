@@ -90,7 +90,7 @@ class MatchManagerSpec extends Specification {
         then:
         match.score.homePoints == homePoints
         match.score.awayPoints == awayPoints
-        match.score.totalScore == totalScore
+        match.totalScore == totalScore
 
         where:
         updateTeam | homePoints | awayPoints | totalScore
@@ -108,20 +108,17 @@ class MatchManagerSpec extends Specification {
         matchManager.addNewMatch(teamA, teamB)
         matchManager.addNewMatch(teamC, teamD)
         matchManager.addNewMatch(teamE, teamF)
-        matchManager.updateMatchScore(updateTeam,homePoints,awayPoints)
-        def matches = matchManager.findAllOngoingMatches()
+        matchManager.updateMatchScore(teamC, 90, 5)
+        matchManager.updateMatchScore(teamE, 5, 90)
+        matchManager.updateMatchScore(teamA, 20, 10)
+
+        def matches = matchManager.findAllOngoingMatches().toList()
 
         then:
         matches.size() == 3
-        matches.first().homeTeam.name() == "Niemcy"
-        matches.first().awayTeam.name() == "Islandia"
-        matches.second().homeTeam.name() == "Czechy"
-        matches.second().awayTeam.name() == "Szkocja"
-
-        where:
-        updateTeam | homePoints | awayPoints | totalScore
-        teamA      | 20         | 10         |  30
-        teamC      | 90         | 5          |  95
-        teamE      | 5          | 90         |  95
+        matches.first().homeTeam.name == "Niemcy"
+        matches.first().awayTeam.name == "Islandia"
+        matches.last().homeTeam.name == "Polska"
+        matches.last().awayTeam.name == "Francja"
     }
 }
