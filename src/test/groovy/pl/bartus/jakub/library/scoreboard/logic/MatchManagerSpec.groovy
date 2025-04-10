@@ -1,6 +1,7 @@
 package pl.bartus.jakub.library.scoreboard.logic
 
 import pl.bartus.jakub.library.scoreboard.exception.ScoreBoardException
+import pl.bartus.jakub.library.scoreboard.model.Score
 import pl.bartus.jakub.library.scoreboard.model.Team
 import spock.lang.Shared
 import spock.lang.Specification
@@ -14,7 +15,7 @@ class MatchManagerSpec extends Specification {
     def setup() {
         matchManager = new MatchManager()
         teamA = new Team("Polska")
-        teamB = new Team("Francja")
+        teamB = new Team("fRANCJA")
         teamC = new Team("Niemcy")
     }
 
@@ -61,28 +62,33 @@ class MatchManagerSpec extends Specification {
     }
 
     def "Should throw a ScoreBoardException during update a score because one of the inputs has negative value"() {
+        given:
+        def score = new Score(-5,4);
+
         when:
         matchManager.addNewMatch(teamA, teamB)
-        matchManager.updateMatchScore(teamA, -5, 4)
+        matchManager.updateMatchScore(teamA, score)
 
         then:
         thrown(ScoreBoardException)
     }
 
     def "Should throw a ScoreBoardException  when updating the score of a non existent match"() {
+        given:
+        def score = new Score(4,5)
+
         when:
         matchManager.addNewMatch(teamA, teamB)
-        matchManager.updateMatchScore(teamC, 4, 5)
+        matchManager.updateMatchScore(teamC, score)
 
         then:
         thrown(ScoreBoardException)
     }
 
     def "Should correctly update the score of an existing match"() {
-
         when:
         matchManager.addNewMatch(teamA, teamB)
-        matchManager.updateMatchScore(updateTeam, homePoints, awayPoints)
+        matchManager.updateMatchScore(updateTeam, new Score(homePoints,awayPoints))
         def match = matchManager.findAllOngoingMatches().find {
             it.homeTeam == updateTeam || it.awayTeam == updateTeam
         }
@@ -102,15 +108,18 @@ class MatchManagerSpec extends Specification {
         def teamD = new Team("Islandia")
         def teamE = new Team("Szkocja")
         def teamF = new Team("Czechy")
+        def scoreA = new Score(20,10)
+        def scoreC = new Score(90,5)
+        def scoreE = new Score(5,90)
 
         when:
         matchManager.addNewMatch(teamA, teamB)
         matchManager.addNewMatch(teamC, teamD)
         Thread.sleep(100)
         matchManager.addNewMatch(teamE, teamF)
-        matchManager.updateMatchScore(teamC, 90, 5)
-        matchManager.updateMatchScore(teamE, 5, 90)
-        matchManager.updateMatchScore(teamA, 20, 10)
+        matchManager.updateMatchScore(teamC, scoreC)
+        matchManager.updateMatchScore(teamE, scoreE)
+        matchManager.updateMatchScore(teamA, scoreA)
 
         def matches = matchManager.findAllOngoingMatches()
 

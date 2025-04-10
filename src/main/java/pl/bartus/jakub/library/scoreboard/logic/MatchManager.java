@@ -24,8 +24,8 @@ public class MatchManager {
                 .toList();
     }
 
-    public void updateMatchScore(@NonNull Team team, int homePoints, int awayPoints) {
-        if (homePoints < 0 || awayPoints < 0) {
+    public void updateMatchScore(@NonNull Team team, @NonNull Score score) {
+        if (score.homePoints() < 0 || score.awayPoints() < 0) {
             throw new ScoreBoardException("Score values must be non-negative");
         }
 
@@ -35,7 +35,7 @@ public class MatchManager {
             throw new ScoreBoardException("Team not found in Score Board");
         }
 
-        match.setScore(new Score(homePoints, awayPoints));
+        match.setScore(score);
         match.calculateTotalScore();
     }
 
