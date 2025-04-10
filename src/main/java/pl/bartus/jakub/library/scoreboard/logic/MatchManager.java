@@ -39,7 +39,7 @@ public class MatchManager {
         match.calculateTotalScore();
     }
 
-    public void addNewMatch(Team homeTeam, Team awayTeam) {
+    public void addNewMatch(@NonNull Team homeTeam, @NonNull Team awayTeam) {
         validateTeams(homeTeam, awayTeam);
 
         Match match = Match.builder()
@@ -51,20 +51,16 @@ public class MatchManager {
     }
 
     private boolean isInOngoingMatch(Team team) {
-        return matches.values().stream().anyMatch(t -> t.isIncludeTeam(team));
+        return matches.values().stream().anyMatch(t -> t.containsTeam(team));
     }
 
     private void validateTeams(Team homeTeam, Team awayTeam) {
-        if (homeTeam == null || awayTeam == null) {
-            throw new ScoreBoardException("Team cannot be null");
-        }
-
         if (homeTeam.equals(awayTeam)) {
-            throw new ScoreBoardException("Team must be different");
+            throw new ScoreBoardException("Home team and Away team cannot be the same");
         }
 
         if (isInOngoingMatch(homeTeam) || isInOngoingMatch(awayTeam)) {
-            throw new ScoreBoardException("Team is in an ongoing match");
+            throw new ScoreBoardException("Team is in the ongoing match");
         }
     }
 }

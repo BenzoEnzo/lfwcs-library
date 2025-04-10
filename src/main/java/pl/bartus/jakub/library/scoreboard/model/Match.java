@@ -19,7 +19,7 @@ public class Match {
         this.totalScore = score.homePoints() + score.awayPoints();
     }
 
-    public boolean isIncludeTeam(Team team) {
+    public boolean containsTeam(Team team) {
         return homeTeam.equals(team) || awayTeam.equals(team);
     }
 
