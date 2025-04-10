@@ -13,8 +13,8 @@ import java.util.*;
 public class MatchManager {
     private final Map<Team, Match> matches = new HashMap<>();
 
-    public void finishMatch(@NonNull Team team) {
-        matches.remove(team);
+    public void finishMatch(@NonNull Team homeTeam) {
+        matches.remove(homeTeam);
     }
 
     public List<Match> findAllOngoingMatches() {
@@ -24,12 +24,12 @@ public class MatchManager {
                 .toList();
     }
 
-    public void updateMatchScore(@NonNull Team team, @NonNull Score score) {
+    public void updateMatchScore(@NonNull Team homeTeam, @NonNull Score score) {
         if (score.homePoints() < 0 || score.awayPoints() < 0) {
             throw new ScoreBoardException("Score values must be non-negative");
         }
 
-        Match match = matches.get(team);
+        Match match = matches.get(homeTeam);
 
         if (match == null) {
             throw new ScoreBoardException("Team not found in Score Board");
